@@ -2,6 +2,9 @@
 # Any changes will be removed on the next run
 <% if @enable_ca -%>
 puppetlabs.services.ca.certificate-authority-service/certificate-authority-service
+<%  if @_server_version >= '5.1.0' -%>
+puppetlabs.trapperkeeper.services.watcher.filesystem-watch-service/filesystem-watch-service
+<%  end -%>
 <% else -%>
 puppetlabs.services.ca.certificate-authority-disabled-service/certificate-authority-disabled-service
 <% end -%>

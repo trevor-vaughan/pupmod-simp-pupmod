@@ -40,8 +40,28 @@ jruby-puppet: {
     # (optional) path to puppet var dir; if not specified, will use the puppet default
     master-var-dir: <%= @vardir %>
 
-    # (optional) maximum number of JRuby instances to allow; defaults to <num-cpus>+2
+    # (optional) maximum number of JRuby instances to allow
     max-active-instances: <%= @max_active_instances %>
+
+    # (optional) maximum number of HTTP requests a given JRuby instance will
+    # handle in its lifetime
+    max-requests-per-instance: <%= @max_requests_per_instance %>
+
+    # (optional) timeout in milliseconds when attempting to borrow an instance
+    # from the JRuby pool
+    borrow-timeout: <%= @borrow_timeout %>
+
+    # (optional) control whether the master service maintains a cache in
+    # conjunction with the use of the `environment_classes` API
+    environment-class-cache-enabled: <%= @environment_class_cache_enabled %>
+
+<% if @compat_version -%>
+    # (optional) EXPERIMENTAL - the MRI compatibility version under which JRuby runs
+    compat-version: <%= @compat_version %>
+
+<% end -%>
+    # (optional) EXPERIMENTAL - Set the compile mode for JRuby
+    compile-mode: <%= @compile_mode %>
 
     # (optional) Authorize access to Puppet master endpoints via rules specified
     # in the legacy Puppet auth.conf file (if true or not specified) or via rules
