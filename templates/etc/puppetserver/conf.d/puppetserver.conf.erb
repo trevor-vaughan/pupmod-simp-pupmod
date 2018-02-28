@@ -55,10 +55,12 @@ jruby-puppet: {
     # conjunction with the use of the `environment_classes` API
     environment-class-cache-enabled: <%= @environment_class_cache_enabled %>
 
-<% if @compat_version -%>
+<% if Gem::Version.new(@_server_version) < Gem::Version.new('5.0.0') -%>
+<%  if @compat_version -%>
     # (optional) EXPERIMENTAL - the MRI compatibility version under which JRuby runs
     compat-version: <%= @compat_version %>
 
+<%  end -%>
 <% end -%>
     # (optional) EXPERIMENTAL - Set the compile mode for JRuby
     compile-mode: <%= @compile_mode %>
@@ -67,6 +69,33 @@ jruby-puppet: {
     # in the legacy Puppet auth.conf file (if true or not specified) or via rules
     # specified in the Puppet Server HOCON-formatted auth.conf (if false).
     use-legacy-auth-conf: <%= @use_legacy_auth_conf %>
+<%  if Gem::Version.new(@_server_version) >= Gem::Version.new('5.1.0') -%>
+
+    # (optional) maximum number of requests that may be queued waiting to
+    # borrow a JRuby from the pool. Once this limit is exceeded, a 503 “Service
+    # Unavailable” response will be returned for all new requests until the
+    # queue drops below the limit. If max-retry-delay is set to a positive
+    # value, then the 503 responses will include a Retry-After header
+    # indicating a random sleep time after which the client may retry the
+    # request.
+    max-queued-requests: <%= @max_queued_requests %>
+
+    # (optional) the upper limit for the random sleep set as a Retry-After
+    # header on 503 responses returned when max-queued-requests is enabled. A
+    # value of 0 will cause the Retry-After header to be omitted.
+    max-retry-delay: <%= @max_retry_delay %>
+
+    # (optional) enable JRuby’s profiler and set it to one of the supported
+    # modes. The default value is off, but it can be set to one of api, flat,
+    # graph, html, json, off, and service. See ruby-prof for details on what
+    # the various modes do.
+    profiling-mode: <%= @profiling_mode %>
+
+    # (optional) set the output file to direct JRuby profiler output. Should be
+    # a fully qualified path writable by the service user. If not set will
+    # default to a random name inside the service working directory.
+    profiling-output-file: <%= @profiling_output_file %>
+<% end -%>
 }
 
 # settings related to HTTP client requests made by Puppet Server

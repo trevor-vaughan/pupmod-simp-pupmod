@@ -1,44 +1,34 @@
 # Add SIMP-specific entries to PuppetServer's auth.conf
 #
+# @param server_distribution
+#   The server distribution that is being managed.
+
 # @param auth_conf_path
-#   Type:    Stdlib::AbsolutePath
-#   Default: /etc/puppetlabs/puppetserver/conf.d/auth.conf
 #   The location to the puppet master's auth.conf
 #
 # @param legacy_cacerts_all
-#   Type:    Boolean
-#   Default: true
-#   If enabled, allow access to the PKI cacerts from the legacy `pki` module from all hosts
+#   Allow access to the PKI cacerts from the legacy `pki` module from all hosts
 #
 # @param legacy_mcollective_all
-#   Type:    Boolean
-#   Default: true
-#   If enabled, allow access to the mcollective cacerts from the legacy `pki` module from all hosts
+#   Allow access to the mcollective cacerts from the legacy `pki` module from
+#   all hosts
 #
 # @param legacy_pki_keytabs_from_host
-#   Type:    Boolean
-#   Default: true
-#   If enabled, allow access to each host's own kerberos keytabs from the legacy location
+#   Allow access to each host's own kerberos keytabs from the legacy location
 #
 # @param pki_cacerts_all
-#   Type:    Boolean
-#   Default: true
-#   If enabled, allow access to the cacerts from the `pki_files` module from all hosts
+#   Allow access to the cacerts from the `pki_files` module from all hosts
 #
 # @param pki_mcollective_all
-#   Type:    Boolean
-#   Default: true
-#   If enabled, allow access to the mcollective PKI from the `pki_files` module from all hosts
+#   Allow access to the mcollective PKI from the `pki_files` module from all
+#   hosts
 #
 # @param keydist_from_host
-#   Type:    Boolean
-#   Default: true
-#   If enabled, allow access to each host's own certs from the `pki_files` module
+#   Allow access to each host's own certs from the `pki_files` module
 #
 # @param krb5_keytabs_from_host
-#   Type:    Boolean
-#   Default: true
-#   If enabled, allow access to each host's own kerberos keytabs from the `pki_files` module
+#   Allow access to each host's own kerberos keytabs from the `pki_files`
+#   module
 #
 class pupmod::master::simp_auth (
   Simplib::ServerDistribution $server_distribution          = simplib::lookup('simp_options::puppet::server_distribution', { 'default_value' => 'PC1' } ),

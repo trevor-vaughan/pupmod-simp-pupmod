@@ -1,7 +1,7 @@
 # Add an autosign entry to the puppet autosign file.
 #
-# Ideally, autosign will not be used in your environment. However,
-# should you happen to need it
+# Ideally, autosign will not be used in your environment. However, should you
+# happen to need it
 #
 # @param name
 #   The entry that you will be autosigning.

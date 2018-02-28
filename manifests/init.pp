@@ -49,8 +49,14 @@
 #   consumed resources can be freed for other uses and so that the cron
 #   job can maintain a safe system state over time.
 #
+# @param digest_algorithm
+#   The hash Digest to use for file operations on the system.
+#
 # @param enable_puppet_master
 #   Whether or not to make the system a puppetmaster.
+#
+# @param environmentpath
+#   The path to the directory holding the puppet environments.
 #
 # @param listen
 #   Whether or not to listen for incoming connections to the puppet

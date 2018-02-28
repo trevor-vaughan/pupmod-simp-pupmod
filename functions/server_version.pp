@@ -1,6 +1,9 @@
 # Authoritatively determine the puppet server version and return `undef` if one
 # could not be determined.
 #
+# @return [String]
+#   The puppet server version
+#
 function pupmod::server_version {
   # Authoritatively determine the puppet server version
   if defined('$::serverversion') {

@@ -1,5 +1,7 @@
 # Provides configuration for a puppet master.
 #
+# @see https://puppet.com/docs/puppetserver/5.2/config_file_puppetserver.html
+#
 # @param bind_address
 #   The IP address to which the Puppet Master process should bind
 #
@@ -17,6 +19,11 @@
 #
 # @param trusted_nets
 #   An array of networks from which to allow access to the master.
+#
+# @param server_distribution
+#   The version of the server that is being managed.
+#
+#   * PC1 covers everything after Puppet 3
 #
 # @param ca_ttl
 #   This is the length after which the CA certificate will no longer be valid.
@@ -39,6 +46,68 @@
 # @param masterport
 #   The port upon which the Puppet master process will listen.
 #
+# @param confdir
+#   The Puppet client configuration directory.
+#
+# @param puppet_confdir
+#   The Puppet server configuration directory.
+#
+# @param codedir
+#   The directory holding the Puppet configuration codebase.
+#
+# @param vardir
+#   The Puppet server 'var' directory
+#
+# @param rundir
+#   The Puppet server runtime directory
+#
+# @param logdir
+#   The log directory for the Puppet server
+#
+# @param ssldir
+#   The SSL configuration directory for the Puppet server
+#
+# @param use_legacy_auth_conf
+#   Enable processing of the legacy Puppetserver auth.conf.
+#
+#   * This is **NOT** recommended and may cause a SIMP installation to
+#     malfunction.
+#
+# @param max_queued_requests
+#   The number of requests that may be queued against the server prior to being
+#   rejected.
+#
+#   * Only functional on ``puppetserver`` >= 5.4.1
+#
+# @param max_retry_delay
+#   The maximum time that a client will wait prior to giving up on the server
+#   response.
+#
+#   * Only functional on ``puppetserver`` >= 5.4.1
+#
+# @param max_requests_per_instance
+#   The number of requests a given JRuby instance will process prior to being
+#   stopped.
+#
+# @param borrow_timeout
+#   The timeout, in milliseconds, when attempting to borrow an instance from
+#   the JRuby pool.
+#
+# @param environment_class_cache_enabled
+#   Maintain a cache in conjucntion with the use of the ``environment_classes``
+#   API.
+#
+# @param compat_version
+#   Set the JRuby compat version
+#
+#   * Has no effect on ``puppetserver`` >= 5.0
+#
+# @param compile_mode
+#   Set the JRuby ``CompileMode``.
+#
+# @param ssl_cipher_suites
+#   Set the SSL Cipher Suites for the ``puppetserver`` to use.
+#
 # @param firewall
 #   If enabled, will use the SIMP iptables classes to manipulate IPTables.
 #
@@ -57,7 +126,7 @@
 #   The protocols that are allowed for communication with the Puppet Server. See
 #   the ssl-protocols documentaiton for the Puppet Server for additional details.
 #
-# @param ssl_cipher_suite
+# @param ssl_cipher_suites
 #   The allowed SSL Cipher Suites to be used by the Puppet Server. The allowed
 #   list is Java version dependent and you will need to check the system Java
 #   documentaiton for details.
@@ -65,6 +134,16 @@
 # @param enable_profiler
 #   Whether or not to enable the Puppet Server profiler to allow for code metrics
 #   gathering.
+#
+# @param profiling_mode
+#   The JRuby profiling mode to use when profiling the server.
+#
+#   * Only functional on ``puppetserver`` >= 5.4.1
+#
+# @param profiling_output_file
+#   The file to use when outputting server profiling information
+#
+#   * Only functional on ``puppetserver`` >= 5.4.1
 #
 # @param admin_api_whitelist
 #   A list of X.509 certificate names that should be allowed to access the Puppet
@@ -121,6 +200,8 @@ class pupmod::master (
   Stdlib::AbsolutePath            $logdir                          = $::pupmod::params::master_config['logdir'],
   Stdlib::AbsolutePath            $ssldir                          = $::pupmod::params::puppet_config['ssldir'],
   Boolean                         $use_legacy_auth_conf            = false,
+  Integer[0]                      $max_queued_requests             = 10,
+  Integer[1]                      $max_retry_delay                 = 1800,
   Boolean                         $firewall                        = simplib::lookup('simp_options::firewall', { 'default_value' => false }),
   Array[Simplib::Host]            $ca_status_whitelist             = [$facts['fqdn']],
   Optional[Stdlib::AbsolutePath]  $ruby_load_path                  = undef,
@@ -129,10 +210,12 @@ class pupmod::master (
   Integer[1000]                   $borrow_timeout                  = 1200000,
   Boolean                         $environment_class_cache_enabled = true,
   Optional[Pattern['^\d+\.\d+$']] $compat_version                  = undef,
-  Enum['off', 'jit', 'force']     $compile_mode                    = 'jit',
+  Enum['off', 'jit', 'force']     $compile_mode                    = 'off',
   Array[String]                   $ssl_protocols                   = ['TLSv1', 'TLSv1.1', 'TLSv1.2'],
   Optional[Array]                 $ssl_cipher_suites               = undef,
   Boolean                         $enable_profiler                 = false,
+  Pupmod::ProfilingMode           $profiling_mode                  = 'off',
+  Stdlib::AbsolutePath            $profiling_output_file           = "${vardir}/server_jruby_profiling",
   Array[Simplib::Hostname]        $admin_api_whitelist             = [$facts['fqdn']],
   String                          $admin_api_mountpoint            = '/puppet-admin-api',
   Boolean                         $log_to_file                     = false,

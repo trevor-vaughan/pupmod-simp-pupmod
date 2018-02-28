@@ -5,6 +5,10 @@
 #
 # @param memory_limited_instances
 # @param processor_count
+#
+# @return [Integer]
+#   The maximum number of instances that should be active on the ``puppetserver``
+#
 function pupmod::max_active_instances (
   Integer[0] $memory_limited_instances = Integer(inline_template("<%= @facts['memorysize_mb'].to_i / 512 %>")),
   Integer[1] $processor_count          = $facts['processors']['count']
